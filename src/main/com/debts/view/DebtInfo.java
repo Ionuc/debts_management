@@ -6,7 +6,9 @@ import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -14,8 +16,13 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
 import main.com.debts.api.Debt;
 import main.com.debts.api.User;
+import main.com.debts.api.helpers.DateLabelFormatter;
 import main.com.debts.management.dao.DebtDataService;
 import main.com.debts.management.dao.UserDataService;
 
@@ -30,6 +37,8 @@ public class DebtInfo extends JFrame implements ActionListener {
 	private MeniuPanel mainePanel;
 	
 	private User loggedUser;
+	
+	private JDatePickerImpl datePicker;
 
 	public DebtInfo(MeniuPanel mainePanel, DebtDataService debtDataService,
 			UserDataService userDataService, User loggedUser) {
@@ -78,12 +87,26 @@ public class DebtInfo extends JFrame implements ActionListener {
 		value.setBounds(120, 90, 100, 30);
 		add(value);
 
+		JLabel datePickerLabel = new JLabel("Date: ");
+		datePickerLabel.setBounds(10, 130, 100, 30);
+		add(datePickerLabel);
+		
+		UtilDateModel model = new UtilDateModel();
+		Properties p = new Properties();
+		p.put("text.today", "Today");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.setBounds(120, 130, 150, 30);
+		add(datePicker);
+		
 		JLabel descriptionLabel = new JLabel("Description:");
-		descriptionLabel.setBounds(10, 130, 100, 30);
+		descriptionLabel.setBounds(10, 170, 100, 30);
 		add(descriptionLabel);
 
 		description = new TextField();
-		description.setBounds(120, 130, 250, 100);
+		description.setBounds(120, 170, 250, 100);
 		add(description);
 
 		this.create = new JButton("Create");
@@ -132,6 +155,7 @@ public class DebtInfo extends JFrame implements ActionListener {
 			debt.setToUsername(((User) toUsername.getSelectedItem())
 					.getUsername());
 			debt.setValue(new BigDecimal(value.getText()));
+			debt.setDate((Date)datePicker.getModel().getValue());
 			debtDataService.create(debt, loggedUser);
 			initializeFrame();
 			mainePanel.updateDebtsTable();

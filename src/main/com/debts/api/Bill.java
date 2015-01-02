@@ -1,6 +1,7 @@
 package main.com.debts.api;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public class Bill {
@@ -8,6 +9,7 @@ public class Bill {
 	private List<String> participants;
 	private BigDecimal value;
 	private String companyDescription;
+	private Date date;
 
 	public String getOwner() {
 		return owner;
@@ -39,5 +41,13 @@ public class Bill {
 
 	public void setCompanyDescription(String companyDescription) {
 		this.companyDescription = companyDescription;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

@@ -1,6 +1,7 @@
 package main.com.debts.api;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class Debt  extends ManagementObject{
 
@@ -8,6 +9,7 @@ public class Debt  extends ManagementObject{
 	private String fromUsername;
 	private BigDecimal value;
 	private String description;
+	private Date date;
 
 	public String getToUsername() {
 		return toUsername;
@@ -63,5 +65,13 @@ public class Debt  extends ManagementObject{
 		newDebt.setToUsername(toUsername);
 		newDebt.setValue(value);
 		return newDebt;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

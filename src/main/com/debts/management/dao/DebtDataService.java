@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +20,7 @@ public class DebtDataService extends AbstractDataService<Debt> {
 
 	private static Connection conn = DataBaseConnection.getCon();
 	private static final String TABLE_NAME = "debt";
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
 
 	public DebtDataService() {
 		super(DebtDataService.class.getSimpleName(), TABLE_NAME, conn);
@@ -30,12 +33,14 @@ public class DebtDataService extends AbstractDataService<Debt> {
 		columnNames.add("toUsername");
 		columnNames.add("value");
 		columnNames.add("description");
+		columnNames.add("date");
 
 		List<String> columnValues = new ArrayList<String>();
 		columnValues.add(debt.getFromUsername());
 		columnValues.add(debt.getToUsername());
 		columnValues.add(debt.getValue().toString());
 		columnValues.add(debt.getDescription());
+		columnValues.add(DATE_FORMAT.format(debt.getDate()));
 
 		create(debt, conn, columnNames, columnValues, loggedUser);
 	}
@@ -49,6 +54,7 @@ public class DebtDataService extends AbstractDataService<Debt> {
 		debt.setValue(new BigDecimal(rs.getDouble("value")).setScale(2,
 				RoundingMode.HALF_EVEN));
 		debt.setId(Long.parseLong(rs.getString("id")));
+		debt.setDate(rs.getDate("date"));
 		return debt;
 	}
 

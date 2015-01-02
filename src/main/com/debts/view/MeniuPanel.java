@@ -128,6 +128,7 @@ public class MeniuPanel extends JPanel implements ActionListener {
 					.getDescription();
 			objects[i][DebtsColumns.PAY.getColumnPosition()] = DebtsColumns.PAY.getValue();
 			objects[i][DebtsColumns.ID.getColumnPosition()] = debt.getId();
+			objects[i][DebtsColumns.DATE.getColumnPosition()] = debt.getDate();
 		}
 
 		debtsTable.setModel(new DebtTableModel(objects, DebtsColumns.getAllValues()));
@@ -197,26 +198,10 @@ public class MeniuPanel extends JPanel implements ActionListener {
 	        {
 	        	return;
 	        }
-	        if (me.getClickCount() == 1) {
-	            if (col == UserColumns.DELETE_BUTTON.getColumnPosition())
-		        {
-	            	if (loggedUser.isAdministrator())
-	            	{
-	            		if (JOptionPane.showConfirmDialog(null,
-	        					"Are you sure you want to delete the corresponding user ?", "Delete the user",
-	        					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-	            			long userId  = Long.parseLong(table.getValueAt(row, UserColumns.ID.getColumnPosition()).toString());
-				        	userDataService.delete(userId, loggedUser);
-				        	((DefaultTableModel) table.getModel()).removeRow(row);
-	        			}
-	            	}
-		        }
-	            else
-	            {
-	            	User user = userDataService.getUser(table.getValueAt(row, UserColumns.USERNAME.getColumnPosition()).toString());
-		        	UserInfo userInfo = new UserInfo(meniuPanel, userDataService, user, loggedUser);
-		        	userInfo.setVisible(true);
-	            }
+	        if (me.getClickCount() == 1 && col != UserColumns.DELETE_BUTTON.getColumnPosition()) {
+	            User user = userDataService.getUser(table.getValueAt(row, UserColumns.USERNAME.getColumnPosition()).toString());
+		       	UserInfo userInfo = new UserInfo(meniuPanel, userDataService, user, loggedUser);
+		       	userInfo.setVisible(true);
 	        }
 	    }
 	}
@@ -252,8 +237,18 @@ public class MeniuPanel extends JPanel implements ActionListener {
 			if (!loggedUser.isAdministrator()) {
 				return;
 			}
-			if (JOptionPane.showConfirmDialog(null,
-					"Are you sure the debt was payed ?", "Delete the debt",
+			String title , body;
+			if (abstractDataService instanceof DebtDataService)
+			{
+				title = "Delete the debt";
+				body = "Are you sure the debt was payed ?";
+			}
+			else
+			{
+				title = "Delete the user";
+				body = "Are you sure you want to delete the corresponding user ?";
+			}
+			if (JOptionPane.showConfirmDialog(null,	body, title,
 					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
 				JTable table = (JTable) e.getSource();
 				int modelRow = Integer.valueOf(e.getActionCommand());

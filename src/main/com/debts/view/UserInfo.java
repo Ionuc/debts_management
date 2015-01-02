@@ -128,7 +128,8 @@ public class UserInfo extends JFrame implements ActionListener {
 		newUser.setName(nameValue.getText());
 		newUser.setSurname(surnameValue.getText());
 		newUser.setUsername(usernameValue.getText());
-		newUser.setAdministrator(Boolean.getBoolean(administratorValue.getText()));
+		Boolean isAdministratorNotset = administratorValue.getText() == null || administratorValue.getText().isEmpty();
+		newUser.setAdministrator(isAdministratorNotset ? Boolean.FALSE : Boolean.getBoolean(administratorValue.getText()));
 		if (user == null)
 		{
 			newUser.setPassword(passwordValue.getText());

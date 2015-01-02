@@ -16,7 +16,7 @@ import main.com.debts.api.User;
  */
 public class FileDataService {
 
-	private static final String FILE_PATH = "D:\\Proiecte-acasa\\Ionut Management\\file";
+	private static final String FILE_PATH = "D:\\Proiecte-acasa\\debts_management\\file";
 	private static final String FILE_NAME = "track-file.txt";
 	private static final String FILE_ABSOLUTE_PATH = FILE_PATH + "/"
 			+ FILE_NAME;

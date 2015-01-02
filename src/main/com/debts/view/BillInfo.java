@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -19,8 +21,13 @@ import javax.swing.JLabel;
 import main.com.debts.api.Bill;
 import main.com.debts.api.User;
 import main.com.debts.api.enums.BillCompanies;
+import main.com.debts.api.helpers.DateLabelFormatter;
 import main.com.debts.management.dao.BillDataservice;
 import main.com.debts.management.dao.UserDataService;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
 
 public class BillInfo extends JFrame implements ActionListener {
 
@@ -37,6 +44,8 @@ public class BillInfo extends JFrame implements ActionListener {
 	private BillDataservice billDataservice;
 	private MeniuPanel meniuPanel;
 	private User loggedUser;
+	
+	private JDatePickerImpl datePicker;
 
 	public BillInfo(MeniuPanel meniuPanel, UserDataService userDataService,
 			BillDataservice billDataservice, User loggedUser) {
@@ -87,8 +96,22 @@ public class BillInfo extends JFrame implements ActionListener {
 		populateOwnerComboBox(ownerComboBox, users);
 		add(ownerComboBox);
 
+		JLabel datePickerLabel = new JLabel("Date: ");
+		datePickerLabel.setBounds(10, 130, 150, 30);
+		add(datePickerLabel);
+		
+		UtilDateModel model = new UtilDateModel();
+		Properties p = new Properties();
+		p.put("text.today", "Today");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.setBounds(120, 130, 150, 30);
+		add(datePicker);
+		
 		JLabel checkBoxLabel = new JLabel("Participants :");
-		checkBoxLabel.setBounds(10, 130, 150, 30);
+		checkBoxLabel.setBounds(10, 170, 150, 30);
 		add(checkBoxLabel);
 
 		populateCheckBoxGroup(users);
@@ -109,7 +132,7 @@ public class BillInfo extends JFrame implements ActionListener {
 
 	private void populateCheckBoxGroup(List<User> users) {
 		usersCheckBox = new ArrayList<JCheckBox>();
-		int index = 130;
+		int index = 170;
 		for (User user : users) {
 			JCheckBox checkBox = new JCheckBox(user.getFullname());
 			checkBox.setName(user.getUsername());
@@ -166,6 +189,7 @@ public class BillInfo extends JFrame implements ActionListener {
 		}
 		bill.setCompanyDescription(companiesComboBox.getSelectedItem()
 				.toString());
+		bill.setDate((Date)datePicker.getModel().getValue());
 		billDataservice.createBill(bill, loggedUser);
 		meniuPanel.updateDebtsTable();
 	}
